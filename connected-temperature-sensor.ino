@@ -6,6 +6,7 @@
 #define INTERRUPT_NUMBER 0
 
 #define SERIAL_BAUD 9600
+#define STARTUP_DELAY 2000
 #define SIGFOX_LED_PIN 13
 #define SIGFOX_POWER 5
 #define LOOP_DELAY 600000
@@ -26,6 +27,8 @@ idDHT11 DHT11(DHT11_PIN,INTERRUPT_NUMBER,dht11_wrapper);
 void setup()
 {
   Serial.begin(SERIAL_BAUD);
+  delay(STARTUP_DELAY); //let the modem wake-up gently
+
   Akeru.begin();
   Akeru.setPower(SIGFOX_POWER);
   
@@ -51,7 +54,6 @@ boolean sendData(int result){
   data.error = result;
   data.temperature = DHT11.getCelsius();
   data.humidity = DHT11.getHumidity();
-  
   
   if (!Akeru.isReady()){
       Serial.println("Cannot send Sigfox message right now"); 
